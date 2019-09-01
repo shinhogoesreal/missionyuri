@@ -1,0 +1,69 @@
+var people,
+    situation,
+    surprised;
+    
+on("chat:message", function(msg){
+  
+  if( msg.type == "api" && msg.content.indexOf("!사람수") !== -1 ){
+      
+    var theContent = parseInt(msg.content.replace("!사람수 ", ""));
+    
+    people = theContent;
+      
+  }
+  
+  if( msg.type == "api" && msg.content.indexOf("!뜨끔") !== -1 ){
+      
+    var theSurprised = parseInt(msg.content.replace("!뜨끔 ", ""));
+    
+    surprised = theSurprised;
+
+  }
+  
+  if( msg.type == "api" && msg.content.indexOf("!알려짐") !== -1 ){
+    
+     var cutie = findObjs({type: 'character', name: msg.who})[0],
+         cutieIs = cutie.get('name'),
+         cutieId = cutie.get('id'),
+         theContent = surprised,
+         guilt = findObjs({type: 'attribute', name: '죄책감', characterid: cutie.id})[0],
+         guiltIs = parseInt(guilt.get('current')),
+         hardheaded = findObjs({type: 'attribute', name: '보수적 경향', characterid: cutie.id})[0],
+         hardheadedIs = parseInt(hardheaded.get('current')),
+         guiltFinal = guiltIs + ( people * hardheadedIs * theContent * 2 );
+     
+        if ( guiltFinal > 250 ){
+            
+            guiltFinal = 250
+            
+        }
+        
+    guilt.set('current', guiltFinal);
+    sendChat( "character|" + cutieId, "/em 의 죄책감이 [[" + guiltFinal + "]]이(가) 되었습니다.\n!죄책감바뀜");
+    
+  }
+  
+  if( msg.type == "api" && msg.content.indexOf("!연상") !== -1 ){
+    
+     var cutie = findObjs({type: 'character', name: msg.who})[0],
+         cutieIs = cutie.get('name'),
+         cutieId = cutie.get('id'),
+         theContent = surprised,
+         guilt = findObjs({type: 'attribute', name: '죄책감', characterid: cutie.id})[0],
+         guiltIs = parseInt(guilt.get('current')),
+         hardheaded = findObjs({type: 'attribute', name: '보수적 경향', characterid: cutie.id})[0],
+         hardheadedIs = parseInt(hardheaded.get('current')),
+         guiltFinal = guiltIs + ( hardheadedIs * theContent );
+         
+        if ( guiltFinal > 250 ){
+            
+            guiltFinal = 250
+            
+        }
+
+    guilt.set('current', guiltFinal);         
+    sendChat( "character|" + cutieId, "/em 의 죄책감이 [[" + guiltFinal + "]]이(가) 되었습니다.\n!죄책감바뀜");
+    
+  }
+  
+});
