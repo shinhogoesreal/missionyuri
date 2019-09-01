@@ -1,0 +1,110 @@
+on("chat:message", function(msg){
+    
+    if( msg.type == "api" && msg.content.indexOf("!할래말래") !== -1 ){
+        
+        var cutie = findObjs({type: 'character', name: msg.who})[0],
+            cutieIs = cutie.get('name'),
+            cutieId = cutie.get('id'),
+            allCuties = findObjs({ type: 'character'}),
+            theContent = parseInt(msg.content.replace("!할래말래 ", "")),
+            lovelyOne = allCuties.find(function(obj) {
+        
+                var theOne = obj.get('name');
+                return theOne !== msg.who;
+        
+            });
+            
+        var lovelyOneIs = lovelyOne.get('name'),
+            attraction = findObjs({type: 'attribute', name: lovelyOneIs + '에게 느끼는 끌림', characterid: cutie.id})[0],
+            attractionIs = parseInt(attraction.get('current'));
+     
+        if( theContent >= 1 && theContent <= 4 ){
+         
+            sendChat( cutieIs, "/r d200<@{"+ msg.who + "|" + lovelyOneIs + "에게 느끼는 끌림}", function(ops){
+
+                yesOrNo(msg, ops);
+                
+            });
+        
+        }
+     
+        else if( theContent >= 5 && theContent <= 8 ){
+         
+            sendChat( cutieIs, "/r d250<@{"+ msg.who + "|" + lovelyOneIs + "에게 느끼는 끌림}", function(ops){
+            
+                yesOrNo(msg, ops);
+                
+            });
+        
+        }
+
+        else if( theContent >= 9 && theContent <= 12 ){
+         
+            sendChat( cutieIs, "/r d300<@{"+ msg.who + "|" + lovelyOneIs + "에게 느끼는 끌림}", function(ops){
+
+                yesOrNo(msg, ops);
+
+            });
+        
+        }
+        
+    }
+        
+});
+
+function yesOrNo (msg, ops) {
+    
+    var cutie = findObjs({type: 'character', name: msg.who})[0],
+        cutieIs = cutie.get('name'),
+        cutieId = cutie.get('id'),
+        allCuties = findObjs({ type: 'character'}),
+        theContent = parseInt(msg.content.replace("!할래말래 ", "")),
+        lovelyOne = allCuties.find(function(obj) {
+    
+            var theOne = obj.get('name');
+            return theOne !== msg.who;
+    
+        });
+        
+    var lovelyOneIs = lovelyOne.get('name'),
+        attraction = findObjs({type: 'attribute', name: lovelyOneIs + '에게 느끼는 끌림', characterid: cutie.id})[0],
+        attractionIs = parseInt(attraction.get('current'));
+    
+    var rollresult = JSON.parse(ops[0].content),
+        theResult = parseInt(rollresult.rolls[0].results[0].v),
+        theTotal = rollresult.total,
+        go = 0;
+        
+        sendChat( "character|" + cutieId, "/em 의 " + lovelyOneIs + "을(를) 향한 끌림은 [[" + attractionIs + "]], 주사위의 결과는 [[" + theResult + "]].");
+        
+        
+        if ( theTotal == 1 ){
+            
+            sendChat( cutieIs, "/r d1", function(ops){
+                
+             var stopper = JSON.parse(ops[0].content),
+                 theStop = parseInt(stopper.rolls[0].results[0].v);
+                if( theStop == 1 ){
+
+                    sendChat( "character|" + cutieId, "/em 은(는) " + lovelyOneIs + "을(를) 거부하지 못합니다.");
+
+                }
+            });
+            
+        }
+        else if (theTotal == 0 ){
+            
+            sendChat( cutieIs, "/r d1", function(ops){
+                
+             var stopper = JSON.parse(ops[0].content),
+                 theStop = parseInt(stopper.rolls[0].results[0].v);
+                if( theStop == 1 ){
+
+                    sendChat( "character|" + cutieId, "/em 은(는) " + lovelyOneIs + "을(를) 거부합니다.");
+
+                }
+            });
+
+        }
+    
+}
