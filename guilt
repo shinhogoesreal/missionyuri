@@ -1,0 +1,105 @@
+var guiltCount = 2;
+
+on("chat:message", function(msg){
+
+        var who = findObjs({type: 'character', name: msg.who})[0];
+            
+        if ( who == undefined ) return;
+        else {
+            
+             if( msg.type == "api" && msg.content.indexOf("!죄책감바뀜") !== -1 ){
+            
+                var cutie = findObjs({type: 'character', name: msg.who})[0],
+                    cutieIs = cutie.get('name'),
+                    cutieId = cutie.get('id'),
+                    allCuties = findObjs({ type: 'character'}),
+                    lovelyOne = allCuties.find(function(obj) {
+            
+                    var theOne = obj.get('name');
+                    return theOne !== msg.who;
+                    
+                    }),
+                    lovelyOneIs = lovelyOne.get('name'),
+                    guilt = findObjs({type: 'attribute', name: '죄책감', characterid: cutie.id})[0],
+                    guiltIs = parseInt(guilt.get('current')),
+                    attraction = findObjs({type: 'attribute', name: lovelyOneIs + '에게 느끼는 끌림', characterid: cutie.id})[0],
+                    attractionIs = parseInt(attraction.get('current')),
+                    immorality = findObjs({type: 'attribute', name: '배덕감', characterid: cutie.id})[0],
+                    immoralityIs = parseInt(immorality.get('current'));
+                    
+                    if( guiltIs >= 1 && guiltIs <= 50 ){
+                        
+                        immorality.set('current', 2);
+                        
+                        if ( guiltCount !== 2 ){
+                            
+                            guiltCount = 2;
+                            sendChat( "", "/desc 💒 " + cutieIs + "은(는) 죄책감이 별로 없는 상태가 되었습니다. 배덕감은 [[" + guiltCount + "]]이(가) 되었습니다. 💒");
+                            
+                        }
+    
+                    }
+                    
+                    else if( guiltIs >= 51 && guiltIs <= 100 ){
+                    
+                        immorality.set('current', 4);
+                        
+                        if ( guiltCount !== 4 ){
+                            
+                            guiltCount = 4;
+                            sendChat( "", "/desc 💒 " + cutieIs + "은(는) 죄책감이 꽤 느껴지는 상태가 되었습니다. 배덕감은 [[" + guiltCount + "]]이(가) 되었습니다. 💒");
+                            
+                        }
+    
+                    
+                     }
+                     
+                    else if( guiltIs >= 101 && guiltIs <= 150 ){
+                    
+                        immorality.set('current', 6);
+                        
+                        if ( guiltCount !== 6 ){
+                            
+                            guiltCount = 6;
+                            sendChat( "", "/desc 💒 " + cutieIs + "은(는) 죄책감이 커서 마음이 불편한 상태가 되었습니다. 배덕감은 [[" + guiltCount + "]]이(가) 되었습니다. 💒");
+                            
+                        }
+    
+                    
+                     }
+                     
+                    else if( guiltIs >= 151 && guiltIs <= 249 ){
+                    
+                        immorality.set('current', 8);
+    
+                        if ( guiltCount !== 8 ){
+                            
+                            guiltCount = 8;
+                            sendChat( "", "/desc 💒 " + cutieIs + "은(는) 죄책감에 짓눌리는 듯이 느껴지는 상태가 되었습니다. 배덕감은 [[" + guiltCount + "]]이(가) 되었습니다. 💒");
+                            
+                        }
+    
+                    
+                     }
+                     
+                    else if( guiltIs == 250 ){
+                        
+                        immorality.set('current', 0);
+                        
+                        if( attractionIs > 125 ){
+                        
+                        attraction.set('current', 125);
+                        attractionIs = parseInt(attraction.get('current'));
+                        
+                        }
+                        
+                        if ( guiltCount !== 0 ){
+                            
+                            guiltCount = 0;
+                            sendChat( "", "/desc 💒 " + cutieIs + "은(는) 죄책감이 너무 컸던 나머지, 동성간 행위를 하는 자신에 대한 깊은 회의감이 들기 시작합니다. 💒\n/desc 💒 누군가와 동성간 행위를 하고싶다는 생각도 사라지고, 동성간 행위를 해도 아무런 감흥이 없을 것만 같습니다 .💒\n/desc 💒 배덕감은 [[" + guiltCount + "]]이(가) 되고, " + lovelyOneIs + "에게 느끼는 끌림은 [[" + attractionIs + "]]이(가) 되었습니다. 💒\n!끌림바뀜");                         }
+    
+            
+                    }
+             }
+        }
+});
