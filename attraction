@@ -1,0 +1,88 @@
+var attractionCount = 6;
+
+on("chat:message", function(msg){
+    
+    if( msg.type == "api" && msg.content.indexOf("!끌림바뀜") !== -1 ){
+
+        var who = findObjs({type: 'character', name: msg.who})[0];
+        
+        if ( who == undefined ) return;
+        else {
+            
+            var cutie = findObjs({type: 'character', name: msg.who})[0],
+                cutieIs = cutie.get('name'),
+                cutieId = cutie.get('id'),
+                allCuties = findObjs({ type: 'character'}),
+                lovelyOne = allCuties.find(function(obj) {
+            
+                    var theOne = obj.get('name');
+                    return theOne !== msg.who;
+                    
+                    }),
+                lovelyOneIs = lovelyOne.get('name'),
+                attraction = findObjs({type: 'attribute', name: lovelyOneIs + '에게 느끼는 끌림', characterid: cutie.id})[0],
+                attractionIs = parseInt(attraction.get('current')),
+                attractionFinal = attractionIs;
+                
+                if( attractionIs >= 1 && attractionIs <= 50 ){
+                    
+                    if ( attractionCount !== 2 ){
+                        
+                        attractionCount = 2;
+                        sendChat( "", "/desc 💒 ️" + cutieIs + "은(는) " + lovelyOneIs + "와 동성간 행위를 몹시 하고 싶지 않은 상태가 되었습니다. 💒");
+                    }
+
+                }
+                
+                else if( attractionIs >= 51 && attractionIs <= 100 ){
+                    
+                    if ( attractionCount !== 4 ){
+                        
+                        attractionCount = 4;
+                        sendChat( "", "/desc 💒 " + cutieIs + "은(는) " + lovelyOneIs + "와 동성간 행위를 하고 싶지 않은 상태가 되었습니다. 💒");
+                        
+                    }
+
+                
+                 }
+                 
+                else if( attractionIs >= 101 && attractionIs <= 150 ){
+                    
+                    if ( attractionCount !== 6 ){
+                        
+                        attractionCount = 6;
+                        sendChat( "", "/desc 💒 " + cutieIs + "은(는) " + lovelyOneIs + "에 대해 중립적인 끌림을 가지고 있는 상태가 되었습니다. 💒");
+                        log("in");
+                        
+                    }
+
+                
+                 }
+                 
+                else if( attractionIs >= 151 && attractionIs <= 200 ){
+                    
+                    if ( attractionCount !== 8 ){
+                        
+                        attractionCount = 8;
+                        sendChat( "", "/desc 💒 " + cutieIs + "은(는) " + lovelyOneIs + "와 동성간 행위를 하고 싶은 상태가 되었습니다. 💒");
+                    }
+
+                
+                 }
+                 
+                else if( attractionIs >= 201 && attractionIs <= 250 ){
+                    
+                    if ( attractionCount !== 0 ){
+                        
+                        attractionCount = 0;
+                        sendChat( "", "/desc 💒 " + cutieIs + "은(는) " + lovelyOneIs + "와 동성간 행위를 몹시 하고 싶은 상태가 되었습니다. 💒");
+                        
+                    }
+
+                
+                 }
+
+        
+                }
+    }
+});
