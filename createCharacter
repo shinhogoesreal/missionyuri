@@ -1,0 +1,235 @@
+var theName = "",
+    theGrade = "",
+    theClass = "",
+    theFaith = 0,
+    theHardheaded = 0,
+    theCharacteristic = "",
+    theSecret = "";
+
+on("chat:message", function(msg){
+
+  if( msg.type == "api" && msg.content.indexOf("!캐이름") !== -1 ){
+    
+        var theContent = msg.content.replace("!캐이름 ", "");
+        
+        theName = theContent;
+            
+  }
+  
+  if( msg.type == "api" && msg.content.indexOf("!캐학년") !== -1 ){
+    
+        var theContent = msg.content.replace("!캐학년 ", "");
+        
+        theGrade = theContent;
+            
+  }
+  
+  if( msg.type == "api" && msg.content.indexOf("!캐반") !== -1 ){
+    
+        var theContent = msg.content.replace("!캐반 ", "");
+        
+        theClass = theContent;
+            
+  }
+  
+  if( msg.type == "api" && msg.content.indexOf("!캐신앙심") !== -1 ){
+    
+        var theContent = msg.content.replace("!캐신앙심 ", "");
+        
+        theFaith = parseInt( theContent );
+            
+  }
+  
+  if( msg.type == "api" && msg.content.indexOf("!캐보수성") !== -1 ){
+    
+        var theContent = msg.content.replace("!캐보수성 ", "");
+        
+        theHardheaded = parseInt( theContent );
+            
+  }
+  
+  if( msg.type == "api" && msg.content.indexOf("!캐성격특징") !== -1 ){
+    
+        var theContent = msg.content.replace("!캐성격특징 ", "");
+        
+        theCharacteristic = theContent;
+            
+  }
+  
+  if( msg.type == "api" && msg.content.indexOf("!캐비설") !== -1 ){
+    
+        var theContent = msg.content.replace("!캐비설 ", "");
+        
+        theSecret = theContent;
+            
+  }
+
+  if( msg.type == "api" && msg.content.indexOf("!캐릭터생성") !== -1 ){
+      
+      createObj('character', {
+          
+          name : theName,
+          inplayerjournals : "all",
+          controlledby : "all"
+          
+      });
+          
+      var cutie = findObjs({type: 'character', name: theName})[0],
+          cutieIs = cutie.get('name'),
+          cutieId = cutie.get('id');
+          
+    sendChat( "character|" + cutieId, "!캐릭터완성");
+      
+  }
+    
+    if( msg.type == "api" && msg.content.indexOf("!캐릭터완성") !== -1 ){
+    
+      var allCuties = findObjs({type: 'character'});
+      
+      if ( allCuties.length == 1 ){
+          
+          var cutie = findObjs({type: 'character', name: msg.who})[0],
+              cutieIs = cutie.get('name'),
+              cutieId = cutie.get('id');
+          
+      }
+      else {
+          
+          var cutie = findObjs({type: 'character', name: msg.who})[0],
+              cutieIs = cutie.get('name'),
+              cutieId = cutie.get('id');
+          
+      }
+          
+      cutie.set({
+          
+          bio : "<br> 💒 학년/반 : " + theGrade + "학년 " + theClass + "반<br> 💒 성격, 특징 : " + theCharacteristic
+          
+      });
+
+      cutie.set({
+          
+          gmnotes : theSecret
+          
+      });
+      
+      sendChat( "", "/desc 💒 " + cutieIs + "이(가) 아름다운 금단의 정원에 들어왔습니다. 저널을 확인하세요. 💒");      
+      sendChat( "character|" + cutieId, "!어서와 " + cutieIs );
+      
+          
+        createObj('attribute', {
+            
+            name: '신앙심',
+            current: theFaith,
+            max: 5,
+            characterid: cutieId
+        });
+        
+        createObj('attribute', {
+            
+            name: '보수적 경향',
+            current: theHardheaded,
+            max: 9,
+            characterid: cutieId 
+            
+        });
+        
+        createObj('attribute', {
+            
+            name: '죄책감',
+            current: 1,
+            max: 250,
+            characterid: cutieId 
+            
+        });
+        
+        createObj('attribute', {
+            
+            name: '배덕감',
+            current: 2,
+            max: 8,
+            characterid: cutieId 
+            
+        });
+      
+        createObj('ability', {
+            
+            name: '행위실행',
+            action: '!했네했어 0',
+            characterid: cutieId 
+            
+        });
+        
+        createObj('ability', {
+            
+            name: '행위거부',
+            action: '!할래말래 0',
+            characterid: cutieId 
+            
+        });
+        
+        createObj('ability', {
+            
+            name: '기도',
+            action: '!기도',
+            characterid: cutieId 
+            
+        });
+        
+        createObj('ability', {
+            
+            name: '고해성사',
+            action: '!고해성사',
+            characterid: cutieId 
+            
+        });
+      
+      sendChat( "character|" + cutieId, "!신캐등장");
+      
+    }
+    
+    if( msg.type == "api" && msg.content.indexOf("!신캐등장") !== -1 ){
+        
+        var cutie = findObjs({type: 'character', name: msg.who})[0],
+            cutieIs = cutie.get('name'),
+            cutieId = cutie.get('id'),
+            allCuties = findObjs({ type: 'character'});
+            
+            if( allCuties.length == 1 ) return;
+            else {            
+                var lovelyOne = allCuties.find(function(obj) {
+            
+                    var theOne = obj.get('name');
+                    return theOne !== msg.who;
+                    
+                    }),
+                lovelyOneIs = lovelyOne.get('name'),
+                lovelyOneId = lovelyOne.get('id');
+                
+            if ( lovelyOneIs == undefined ) return;
+            else {
+                
+                createObj('attribute', {
+                    name: lovelyOneIs + '에게 느끼는 끌림',
+                    current: 125,
+                    max: 250,
+                    characterid: cutieId
+                });
+                
+                createObj('attribute', {
+                    name: cutieIs + '에게 느끼는 끌림',
+                    current: 125,
+                    max: 250,
+                    characterid: lovelyOneId
+                });
+                
+            }
+            
+
+            
+        }
+        
+    }
+    
+    
+});
