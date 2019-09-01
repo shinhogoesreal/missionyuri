@@ -1,0 +1,45 @@
+on("chat:message", function(msg){
+   
+  if( msg.type == "api" && msg.content.indexOf("!어머쟤네") !== -1 ){
+    
+    var allCuties = findObjs({type: 'character'}),
+        i = 0;
+    
+    while( i < allCuties.length ){
+    
+    var cutie = allCuties[i],
+        cutieDidSth = findObjs({type: 'ability', name: '행위실행', characterid: cutie.id})[0],
+        theContent = parseInt(msg.content.replace("!어머쟤네 ", "")),
+        theCutieDid = cutieDidSth.get('action'),
+        cutieLastDid = parseInt(theCutieDid.replace("!했네했어 ", "")),
+        cutieWillDo = theCutieDid.replace( cutieLastDid, theContent );
+    
+        cutieDidSth.set( 'action', cutieWillDo);
+        i = i + 1;
+    
+    }
+      
+  }
+  
+  if( msg.type == "api" && msg.content.indexOf("!설마쟤네") !== -1 ){
+   
+    var allCuties = findObjs({type: 'character'}),
+        i = 0;
+    
+    while( i < allCuties.length ){
+    
+    var cutie = allCuties[i],
+        cutieTriedSth = findObjs({type: 'ability', name: '행위거부', characterid: cutie.id})[0],
+        theContent = parseInt(msg.content.replace("!설마쟤네 ", "")),
+        theCutieTried = cutieTriedSth.get('action'),
+        cutieLastTried = parseInt(theCutieTried.replace("!할래말래 ", "")),
+        cutieWillTry = theCutieTried.replace( cutieLastTried, theContent );
+    
+        cutieTriedSth.set( 'action', cutieWillTry);
+        i = i + 1;
+    
+    }
+      
+  }
+  
+});
