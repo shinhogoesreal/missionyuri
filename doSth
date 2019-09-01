@@ -1,0 +1,156 @@
+on("chat:message", function(msg){
+   
+  if( msg.type == "api" && msg.content.indexOf("!했네했어") !== -1 ){
+      
+      var cutie = findObjs({type: 'character', name: msg.who})[0],
+          cutieIs = cutie.get('name'),
+          cutieId = cutie.get('id'),
+          allCuties = findObjs({ type: 'character'}),
+          theContent = parseInt(msg.content.replace("!했네했어 ", "")),
+          lovelyOne = allCuties.find(function(obj) {
+        
+        var theOne = obj.get('name');
+        return theOne !== msg.who;
+        
+        });
+    
+     var lovelyOneIs = lovelyOne.get('name');
+     
+     if( theContent >= 1 && theContent <= 4 ){
+         
+         sendChat( cutieIs, "/r d200cs<1<@{"+ msg.who + "|" + lovelyOneIs + "에게 느끼는 끌림}", function(ops){
+            
+                rolling(msg, ops);
+                    
+                });
+            }
+
+     
+     else if( theContent >= 5 && theContent <= 8 ){
+         
+         sendChat( cutieIs, "/r d250cs<1<@{"+ msg.who + "|" + lovelyOneIs + "에게 느끼는 끌림}", function(ops){
+            
+                rolling(msg, ops);
+                
+                });
+            }
+
+     
+     else if( theContent >= 9 && theContent <= 12 ){
+         
+         sendChat( cutieIs, "/r d300cf>300cs<1<@{"+ msg.who + "|" + lovelyOneIs + "에게 느끼는 끌림}", function(ops){
+
+                rolling(msg, ops);  
+
+                });
+            }
+   
+    }
+});
+
+function rolling (msg, ops) {
+    
+      var cutie = findObjs({type: 'character', name: msg.who})[0],
+      cutieIs = cutie.get('name'),
+      cutieId = cutie.get('id'),
+      allCuties = findObjs({ type: 'character'}),
+      theContent = parseInt(msg.content.replace("!했네했어 ", "")),
+      lovelyOne = allCuties.find(function(obj) {
+    
+    var theOne = obj.get('name');
+    return theOne !== msg.who;
+    
+    });
+    
+     var lovelyOneIs = lovelyOne.get('name');
+    
+    var rollresult = JSON.parse(ops[0].content),
+        theResult = parseInt(rollresult.rolls[0].results[0].v),
+        theTotal = rollresult.total,
+        PF = " ",
+        bigHit = 1;
+        
+        
+    if ( theTotal == 1 ){
+        
+        PF = "흥분합니다.";
+        if ( theResult == 1 ){
+            
+            PF = "굉장히 흥분합니다.";
+            bigHit = 2;
+            
+        }
+        
+    }
+    else {
+        
+        PF = "흥분하지 않습니다.";
+        if ( theResult == 251 ){
+            
+            PF = "불쾌감을 느낍니다.";
+            bigHit = 2;
+            
+        }
+    }
+    
+    var guilt = findObjs({type: 'attribute', name: '죄책감', characterid: cutie.id})[0],
+        guiltIs = parseInt(guilt.get('current')),
+        attraction = findObjs({type: 'attribute', name: lovelyOneIs + '에게 느끼는 끌림', characterid: cutie.id})[0],
+        attractionIs = parseInt(attraction.get('current')),
+        faith = findObjs({type: 'attribute', name: '신앙심', characterid: cutie.id})[0],
+        faithIs = parseInt(faith.get('current')),
+        immorality = findObjs({type: 'attribute', name: '배덕감', characterid: cutie.id})[0],
+        immoralityIs = parseInt(immorality.get('current')),
+        hardheaded = findObjs({type: 'attribute', name: '보수적 경향', characterid: cutie.id})[0],
+        guiltFinal = guiltIs + ( faithIs * theContent ),
+        attractionFinal = attractionIs + ( theTotal * theContent * immoralityIs * bigHit ) + ( (theTotal-1) * theContent * bigHit * bigHit * 2 );
+        faithFinal = faithIs - 1;
+        arroused = theTotal * theContent * immoralityIs * bigHit;
+    
+    if ( guiltFinal > 250 ){
+        
+        guiltFinal = 250
+        
+    }
+    
+    if ( guiltFinal < 1 ){
+        
+        guiltFinal = 1
+        
+    }
+    
+    if ( attractionFinal > 250 ){
+        
+        attractionFinal = 250
+        
+    }
+    
+    if ( attractionFinal < 1 ){
+        
+        attractionFinal = 1
+        
+    }
+    
+    attraction.set('current', attractionFinal);
+    guilt.set('current', guiltFinal);
+
+    sendChat( "character|" + cutieId, "/em 의 " + lovelyOneIs + "을(를) 향한 끌림은 [[" + attractionIs + "]], 주사위의 결과는 [[" + theResult + "]].\n/em 은(는) " + PF + "\n/em 이(가) " + lovelyOneIs + "에게 느끼는 끌림은 [[" + attractionFinal + "]]이(가) 되었습니다.\n/em 이(가) 느끼는 죄책감은 [[" + guiltFinal + "]]이(가) 되었습니다.\n!끌림바뀜");
+    
+    if( theTotal == 0 ){
+        sendChat( "character|" + cutieId, "!죄책감바뀜");
+    }
+    
+    else if ( theTotal == 1 && arroused < 40 ){
+        
+        sendChat( "character|" + cutieId, "!죄책감바뀜");
+    }
+    
+    else if ( arroused >= 40 ){
+        
+        sendChat( "", "/desc 💒 앗...! 💒 \n/desc 💒 " + cutieIs + "은(는) 동성간 행위에 몹시 흥분한 나머지 신앙심이 흔들리고 있습니다. 💒 \n/desc 💒 " + cutieIs + "의 보수적인 마음이 신앙심을 지켜보려 합니다. 💒");
+        sendChat( "character|" + cutieId, "[신앙심 흔들](!신앙심흔들)");
+            
+    }
+    
+    
+}
