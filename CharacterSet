@@ -1,0 +1,87 @@
+String.prototype.replaceAll = function(org, dest) {
+    return this.split(org).join(dest);
+}
+
+var thePlayers = "?{플레이어";
+
+on("chat:message", function(msg){
+    
+  if( msg.type == "api" && msg.content.indexOf("!어서와") !== -1 ){
+    
+      var cutie = findObjs({type: 'character', name: msg.who})[0],
+          cutieIs = cutie.get('name'),
+          cutieId = cutie.get('id'),
+          prayOrConfess = findObjs({type: 'macro', name: '기도or고해성사'})[0],
+          prayOrConfessIs = prayOrConfess.get('action'),
+          faithFirm = findObjs({type: 'macro', name: '신앙심-굳건'})[0],
+          faithFirmIs = faithFirm.get('action'),
+          faithShake = findObjs({type: 'macro', name: '신앙심-흔들'})[0],
+          faithShakeIs = faithShake.get('action'),
+          exposed = findObjs({type: 'macro', name: '알려진다'})[0],
+          exposedIs = exposed.get('action'),
+          reminded = findObjs({type: 'macro', name: '연상한다'})[0],
+          remindedIs = reminded.get('action'),
+          yesOrNo = findObjs({type: 'macro', name: '행위거절할까'})[0],
+          yesOrNoIs = yesOrNo.get('action'),
+          doSth = findObjs({type: 'macro', name: '행위실행이다'})[0],
+          doSthIs = doSth.get('action');
+          
+        prayOrConfessPlus = prayOrConfessIs.replaceAll( thePlayers, thePlayers + "|" + cutieIs);
+        faithFirmPlus = faithFirmIs.replaceAll( thePlayers, thePlayers + "|" + cutieIs);
+        faithShakePlus = faithShakeIs.replaceAll( thePlayers, thePlayers + "|" + cutieIs);
+        exposedPlus = exposedIs.replaceAll( thePlayers, thePlayers + "|" + cutieIs);
+        remindedPlus = remindedIs.replaceAll( thePlayers, thePlayers + "|" + cutieIs);
+        yesOrNoPlus = yesOrNoIs.replaceAll( thePlayers, thePlayers + "|" + cutieIs);
+        doSthPlus = doSthIs.replaceAll( thePlayers, thePlayers + "|" + cutieIs);
+        
+        prayOrConfess.set('action', prayOrConfessPlus);
+        faithFirm.set('action', faithFirmPlus);
+        faithShake.set('action', faithShakePlus);
+        exposed.set('action', exposedPlus);
+        reminded.set('action', remindedPlus);
+        yesOrNo.set('action', yesOrNoPlus);
+        doSth.set('action', doSthPlus);
+        
+        thePlayers = thePlayers + "|" + cutieIs;
+  }
+  
+  if( msg.type == "api" && msg.content.indexOf("!싹지우기") !== -1 ){
+      
+      var lastPlayers = thePlayers,
+          prayOrConfess = findObjs({type: 'macro', name: '기도or고해성사'})[0],
+          prayOrConfessIs = prayOrConfess.get('action'),
+          faithFirm = findObjs({type: 'macro', name: '신앙심-굳건'})[0],
+          faithFirmIs = faithFirm.get('action'),
+          faithShake = findObjs({type: 'macro', name: '신앙심-흔들'})[0],
+          faithShakeIs = faithShake.get('action'),
+          exposed = findObjs({type: 'macro', name: '알려진다'})[0],
+          exposedIs = exposed.get('action'),
+          reminded = findObjs({type: 'macro', name: '연상한다'})[0],
+          remindedIs = reminded.get('action'),
+          yesOrNo = findObjs({type: 'macro', name: '행위거절할까'})[0],
+          yesOrNoIs = yesOrNo.get('action'),
+          doSth = findObjs({type: 'macro', name: '행위실행이다'})[0],
+          doSthIs = doSth.get('action');
+          
+          thePlayers = "?{플레이어";
+          
+        prayOrConfessPlus = prayOrConfessIs.replaceAll( lastPlayers, thePlayers);
+        faithFirmPlus = faithFirmIs.replaceAll( lastPlayers, thePlayers);
+        faithShakePlus = faithShakeIs.replaceAll( lastPlayers, thePlayers);
+        exposedPlus = exposedIs.replaceAll( lastPlayers, thePlayers);
+        remindedPlus = remindedIs.replaceAll( lastPlayers, thePlayers);
+        yesOrNoPlus = yesOrNoIs.replaceAll( lastPlayers, thePlayers);
+        doSthPlus = doSthIs.replaceAll( lastPlayers, thePlayers);
+        
+        prayOrConfess.set('action', prayOrConfessPlus);
+        faithFirm.set('action', faithFirmPlus);
+        faithShake.set('action', faithShakePlus);
+        exposed.set('action', exposedPlus);
+        reminded.set('action', remindedPlus);
+        yesOrNo.set('action', yesOrNoPlus);
+        doSth.set('action', doSthPlus);
+    
+      
+  }
+    
+});
