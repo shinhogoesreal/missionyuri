@@ -1,0 +1,103 @@
+on("chat:message", function(msg){
+   
+  if( msg.type == "api" && msg.content.indexOf("!신앙심흔들") !== -1 ){
+
+     var cutie = findObjs({type: 'character', name: msg.who})[0],
+         cutieIs = cutie.get('name'),
+         cutieId = cutie.get('id'),
+         guilt = findObjs({type: 'attribute', name: '죄책감', characterid: cutie.id})[0],
+         guiltIs = parseInt(guilt.get('current')),
+         faith = findObjs({type: 'attribute', name: '신앙심', characterid: cutie.id})[0],
+         faithIs = parseInt(faith.get('current')),
+         hardheaded = findObjs({type: 'attribute', name: '보수적 경향', characterid: cutie.id})[0],
+         hardheadedIs = parseInt(hardheaded.get('current')),
+         guiltFinal = guiltIs - 50,
+         faithFinal = faithIs - 1;
+
+    sendChat( cutieIs, "/r d10<@{"+ msg.who + "|보수적 경향}", function(rslt){
+        
+        var lostFaith = JSON.parse(rslt[0].content),
+            theResult = parseInt(lostFaith.rolls[0].results[0].v),
+            theTotal = lostFaith.total;
+        
+        if( theTotal == 0 ){
+            
+            if( faithFinal < 1 ){
+                
+                faithFinal = 1;
+                
+            }
+            
+            if ( guiltFinal < 1 ){
+                
+                guiltFinal = 1;
+                
+            }
+            
+            
+            faith.set('current', faithFinal);
+            guilt.set('current', guiltFinal);
+            
+            sendChat( "character|" + cutieId, "/em 의 보수적 경향은 [[" + hardheadedIs + "]], 주사위의 결과는 [[" + theResult + "]].\n/em 의 신앙심에 그만 금이 가버립니다. 동성간 행위를 한 것에 대한 죄책감도 함께 사라집니다.\n/em 의 신앙심이 [[" + faithFinal + "]]이(가) 되었습니다.\n/em 의 죄책감이 [[" + guiltFinal + "]]이(가) 되었습니다.\n!죄책감바뀜");
+        
+        }
+        else{
+            
+            sendChat( "character|" + cutieId, "/em 의 보수적 경향은 [[" + hardheadedIs + "]], 주사위의 결과는 [[" + theResult + "]].\n/em 은(는) 마음을 다잡고 신앙심을 지켜냈습니다.\n!죄책감바뀜");
+        
+        }
+    });
+                
+  }
+  
+    if( msg.type == "api" && msg.content.indexOf("!신앙심굳건") !== -1 ){
+        
+     var cutie = findObjs({type: 'character', name: msg.who})[0],
+         cutieIs = cutie.get('name'),
+         cutieId = cutie.get('id'),
+         guilt = findObjs({type: 'attribute', name: '죄책감', characterid: cutie.id})[0],
+         guiltIs = parseInt(guilt.get('current')),
+         faith = findObjs({type: 'attribute', name: '신앙심', characterid: cutie.id})[0],
+         faithIs = parseInt(faith.get('current')),
+         hardheaded = findObjs({type: 'attribute', name: '보수적 경향', characterid: cutie.id})[0],
+         hardheadedIs = parseInt(hardheaded.get('current')),
+         guiltFinal = guiltIs + 50,
+         faithFinal = faithIs + 1;
+      
+    sendChat( cutieIs, "/r d10<@{"+ msg.who + "|보수적 경향}", function(rslt){
+        
+        var earnedFaith = JSON.parse(rslt[0].content),
+            theResult = parseInt(earnedFaith.rolls[0].results[0].v),
+            theTotal = earnedFaith.total;
+        
+        if( theTotal == 1 ){
+            
+            if( faithFinal > 5 ){
+                
+                faithFinal = 5;
+                
+            }
+            
+            if ( guiltFinal > 250 ){
+                
+                guiltFinal = 250;
+                
+            }
+            
+            
+            faith.set('current', faithFinal);
+            guilt.set('current', guiltFinal);
+            
+            sendChat( "character|" + cutieId, "/em 의 보수적 경향은 [[" + hardheadedIs + "]], 주사위의 결과는 [[" + theResult + "]].\n/em 은(는) 믿음이 깊어집니다. 하지만 그만큼 동성간 행위를 한 것에 대한 죄책감도 심해집니다.\n/em 의 신앙심이 [[" + faithFinal + "]]이(가) 되었습니다.\n/em 의 죄책감이 [[" + guiltFinal + "]]이(가) 되었습니다.\n!죄책감바뀜");
+        
+        }
+        else{
+            
+            sendChat( "character|" + cutieId, "/em 의 보수적 경향은 [[" + hardheadedIs + "]], 주사위의 결과는 [[" + theResult + "]].\n/em 의 마음은 생각보다 감화되지 않았던 모양입니다.");
+        
+        }
+    });
+                
+  }
+  
+});
