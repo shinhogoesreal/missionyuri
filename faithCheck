@@ -1,0 +1,76 @@
+on("ready", function(){
+    
+    log("색스해");
+    
+});
+
+on("chat:message", function(msg){
+   
+  if( msg.type == "api" && msg.content.indexOf("!흔들어봐라") !== -1 ){
+    
+        var theContent = msg.content.replace("!흔들어봐라 ", ""),
+            cutie = findObjs({type: 'character', name: theContent})[0],
+            cutieIs = cutie.get('name'),
+            cutieId = cutie.get('id');
+            
+        sendChat( "character|" + cutieId, "[신앙심 흔들](!신앙심흔들)");
+            
+  }
+  
+  if( msg.type == "api" && msg.content.indexOf("!굳건해봐라") !== -1 ){
+    
+        var theContent = msg.content.replace("!굳건해봐라 ", ""),
+            cutie = findObjs({type: 'character', name: theContent})[0],
+            cutieIs = cutie.get('name'),
+            cutieId = cutie.get('id');
+            
+        sendChat( "character|" + cutieId, "[신앙심 굳건](!신앙심굳건)");
+            
+  }
+  
+  if( msg.type == "api" && msg.content.indexOf("!알려졌단다") !== -1 ){
+    
+        var theContent = msg.content.replace("!알려졌단다 ", ""),
+            cutie = findObjs({type: 'character', name: theContent})[0],
+            cutieIs = cutie.get('name'),
+            cutieId = cutie.get('id');
+            
+        sendChat( "character|" + cutieId, "[심장이 덜컥](!알려짐)");
+            
+  }
+  
+  if( msg.type == "api" && msg.content.indexOf("!떠올렸단다") !== -1 ){
+    
+        var theContent = msg.content.replace("!떠올렸단다 ", ""),
+            cutie = findObjs({type: 'character', name: theContent})[0],
+            cutieIs = cutie.get('name'),
+            cutieId = cutie.get('id');
+            
+        sendChat( "character|" + cutieId, "[뜨끔](!연상)");
+            
+  }
+  
+});
+
+function iAmtheGM() {
+    
+    var x = 0;
+    findPlayer = findObjs({type: 'player'}),
+    thePlayer = findObjs({type: 'player'})[x],
+    theGM = {};
+
+    while( x < findPlayer.length - 1  ){
+        
+        if ( playerIsGM(thePlayer.id) == true ){
+    
+            theGM = thePlayer;
+        }
+        x = x + 1;
+    
+    }
+    
+    var GMid = theGM.id;
+    log(GMid);
+    return GMid;
+    
+}
