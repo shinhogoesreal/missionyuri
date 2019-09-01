@@ -1,0 +1,109 @@
+on("chat:message", function(msg){
+   
+  if( msg.type == "api" && msg.content.indexOf("!기도") !== -1 ){
+    
+     var cutie = findObjs({type: 'character', name: msg.who})[0],
+         cutieIs = cutie.get('name'),
+         cutieId = cutie.get('id'),
+         guilt = findObjs({type: 'attribute', name: '죄책감', characterid: cutie.id})[0],
+         guiltIs = parseInt(guilt.get('current')),
+         faith = findObjs({type: 'attribute', name: '신앙심', characterid: cutie.id})[0],
+         faithIs = parseInt(faith.get('current')),
+         guiltFinal = guiltIs;
+         
+    sendChat( cutieIs, "/r d6<@{"+ msg.who + "|신앙심}", function(rslt){
+        
+        var prayResult = JSON.parse(rslt[0].content),
+            theResult = parseInt(prayResult.rolls[0].results[0].v);
+        
+        sendChat( "", "/desc 💒 " + cutieIs + "은(는) 기도를 합니다... 💒");
+        
+        if( prayResult.total == 1 ){
+            
+            guiltFinal = guiltIs - ( faithIs * 10 );
+            
+            if ( guiltFinal < 1 ){
+                
+                guiltFinal = 1;
+                
+            }
+            
+            guilt.set('current', guiltFinal);
+            
+            sendChat( "character|" + cutieId, "/em 의 신앙심은 [[" + faithIs + "]], 주사위의 결과는 [[" + theResult + "]].\n/em 은(는) 신께서 용서해 주신 것만 같은 기분을 느낍니다.\n/em 의 죄책감이 [[" + guiltFinal + "]]이(가) 되었습니다.\n!죄책감바뀜");
+            
+        }
+        else{
+            
+            guiltFinal = guiltIs + ( faithIs * 4 );
+            
+            if ( guiltFinal > 250 ){
+                
+                guiltFinal = 250;
+                
+            }
+            
+            guilt.set('current', guiltFinal);
+            
+            sendChat( "character|" + cutieId, "/em 의 신앙심은 [[" + faithIs + "]], 주사위의 결과는 [[" + theResult + "]].\n/em 은(는) 기도에 마음을 집중하지 못했습니다.\n/em 의 죄책감이 [[" + guiltFinal + "]]이(가) 되었습니다.\n!죄책감바뀜");
+            
+        }
+        
+    });
+    
+  }
+  
+  if( msg.type == "api" && msg.content.indexOf("!고해성사") !== -1 ){
+    
+     var cutie = findObjs({type: 'character', name: msg.who})[0],
+         cutieIs = cutie.get('name'),
+         cutieId = cutie.get('id'),
+         guilt = findObjs({type: 'attribute', name: '죄책감', characterid: cutie.id})[0],
+         guiltIs = parseInt(guilt.get('current')),
+         faith = findObjs({type: 'attribute', name: '신앙심', characterid: cutie.id})[0],
+         faithIs = parseInt(faith.get('current')),
+         guiltFinal = guiltIs;
+         
+    sendChat( cutieIs, "/r d6<@{"+ msg.who + "|신앙심}", function(rslt){
+        
+        var confessResult = JSON.parse(rslt[0].content),
+            theResult = parseInt(confessResult.rolls[0].results[0].v);
+        
+        sendChat( "", "/desc 💒 " + cutieIs + "은(는) 고해성사를 합니다... 💒");
+        
+        if( confessResult.total == 1 ){
+            
+            guiltFinal = guiltIs - ( faithIs * 20 );
+            
+            if ( guiltFinal < 1 ){
+                
+                guiltFinal = 1;
+                
+            }
+            
+            guilt.set('current', guiltFinal);
+            
+            sendChat( "character|" + cutieId, "/em 의 신앙심은 [[" + faithIs + "]], 주사위의 결과는 [[" + theResult + "]].\n/em 은(는) 신부님의 말씀을 듣고 한결 마음이 가벼워졌습니다.\n/em 의 죄책감이 [[" + guiltFinal + "]]이(가) 되었습니다.\n!죄책감바뀜");
+            
+        }
+        else{
+            
+            guiltFinal = guiltIs + ( faithIs * 10 );
+            
+            if ( guiltFinal > 250 ){
+                
+                guiltFinal = 250;
+                
+            }
+            
+            guilt.set('current', guiltFinal);
+            
+            sendChat( "character|" + cutieId, "/em 의 신앙심은 [[" + faithIs + "]], 주사위의 결과는 [[" + theResult + "]].\n/em 은(는) 신부님에게 사실을 털어놓았더니 오히려 더 부끄럽게 느껴졌습니다.\n/em 의 죄책감이 [[" + guiltFinal + "]]이(가) 되었습니다.\n!죄책감바뀜");
+            
+        }
+        
+    });
+    
+  }
+  
+});
