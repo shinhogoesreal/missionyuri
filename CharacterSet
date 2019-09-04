@@ -2,9 +2,15 @@ String.prototype.replaceAll = function(org, dest) {
     return this.split(org).join(dest);
 }
 
-var thePlayers = "?{플레이어";
-
 on("chat:message", function(msg){
+    
+    var thePlayersAre = findObjs({type: 'macro', name: '기도or고해성사'})[0];
+        thePlayersAreIn = thePlayersAre.get('action'),
+        theStart = "?{플레이어",
+        theEnd = "}",
+        theStartP = thePlayersAreIn.indexOf(theStart),
+        theEndP = thePlayersAreIn.indexOf(theEnd),
+        thePlayers = thePlayersAreIn.slice(theStartP, theEndP);
     
   if( msg.type == "api" && msg.content.indexOf("!어서와") !== -1 ){
     
